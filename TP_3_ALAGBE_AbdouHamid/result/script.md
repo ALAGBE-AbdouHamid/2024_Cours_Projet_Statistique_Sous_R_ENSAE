@@ -479,7 +479,7 @@ plot <- plot +
 plot
 ```
 
-![](script_files/figure-html/graph N°2 gender inequality-1.png)<!-- -->
+![](script_files/figure-html/graph N°3 gender inequality-1.png)<!-- -->
 
 
 

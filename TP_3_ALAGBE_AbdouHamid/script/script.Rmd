@@ -389,7 +389,7 @@ world_gender_inequality_index$Region <- "World"
 ```
 
 
-```{r final dataset for gender inequality used in plotting the graph N°2}
+```{r final dataset for gender inequality used in plotting the graph N°3}
 
 # Final dataset for plotting
 
@@ -402,7 +402,7 @@ plot_gender_inequality_index <-
 
 
 
-```{r graph N°2 gender inequality}
+```{r graph N°3 gender inequality}
 
 plot <- 
   ggplot(plot_gender_inequality_index,
