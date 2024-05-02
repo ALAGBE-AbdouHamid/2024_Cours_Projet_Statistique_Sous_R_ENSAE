@@ -1,0 +1,282 @@
+---
+title: "TP1 - Data Analysis I"
+author: "Guerzoniansus"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: '3'
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    number_sections: true
+    code_folding: show
+    keep_md: true
+---
+
+
+```{r setup, include=FALSE, results = 'hide'}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+  results = "show"
+)
+```
+
+
+# Résumé
+L’objectif de ce projet est d'appliquer les outils que nous avons étudiés pendant le cours du logiciel statistique R, dans le cas d’une étude de cas réelle. Les codes utiliser pour répondre aux questions sont intégrés dans le corps du rapport grâce à R Markdown.
+
+
+# Importation des packages nécessaires et préparation de l'environnement R
+
+```{r packages needed}
+library(dplyr)
+library(readxl)
+library(here)
+library(labelled)
+```
+
+
+```{r remove environment variables}
+rm(list=ls())
+```
+
+
+
+```{r change working dir}
+setwd(dirname(getwd())) # récupère le dossier dans lequel se trouve le script R, prend le dossier parent et le définit comme working directory
+c_dir <- getwd()
+```
+
+
+# Recodage et labelisation
+
+## Description de la base
+
+Le fichier Base_Projet.xlsx contient 250 observations et 33 variables.
+La première colonne key correspond à l’identifiant de la PME. Les variables sont les suivantes :
+<ul>
+  <li>sexe: Sexe</li>
+  <li>age: Age</li>
+  <li>sit_mat: Situation maritale</li>
+  <li>si_chef_men: Statut dans le ménage</li>
+  <li>ethnie: Ethnie</li>
+  <li>occupation: Occupation</li>
+  <li>formation: Formation</li>
+  <li>niveau_alphabs: Niveau d'alphabétisation</li>
+  <li>sup_tot: Quelle est la superficie emblavée en sésame la saison passée ? en hectares</li>
+  <li>types_varietes: Quelles sont les variétés que vous utilisez pour la production de sésame ?</li>
+  <li>var_trad: Si variétés traditionnelles, donnez les noms</li>
+  <li>raison_var_trad: Pourquoi utilisez vous les variétés traditionnelles ?</li>
+  <li>var_amel: Si variétés améliorées, laquelle utilisez-vous ?</li>
+  <li>raison_var_amel: Pourquoi utilisez vous les variétés améliorées ?</li>
+  <li>criteres_var: Quelles sont les critères de choix des variétés de sésame ?</li>
+</ul>
+
+
+## Importation et mise en forme
+
+<ul>
+  <li>Importation de la base de données dans un objet de type data.frame nommé base_tp2</li>
+  
+```{r}
+base_tp2 <- read_excel(paste0(c_dir, "/data/Base TP2.xlsx"))
+```
+  
+  <li>Nombre de lignes (i.e. le nombre de PME) et de colonnes (i.e. nombre de variables) de la base
+projet</li>
+
+```{r}
+n_rows <- nrow(base_tp2)
+n_cols <- ncol(base_tp2)
+cat("Nombre de PME (lignes): ", n_rows, "\n")
+cat("Nombre de variables (colonnes): ", n_cols, "\n")
+```
+
+## Recodage et labelisation
+  
+
+```{r}
+base_tp2$sexe <- labelled::labelled(
+  base_tp2$sexe, 
+  c(`Homme` = 1,
+    `Femme` = 2))
+
+base_tp2$sit_mat <- labelled::labelled(
+  base_tp2$sit_mat, 
+  c(`Marié(e)` = 1,
+    `Veuf(ve)` = 3,
+    `Divorcé(e)` = 4,
+    `Séparé(e)` = 5,
+    `Célibataire` = 6))
+
+base_tp2$si_chef_men <- labelled::labelled(
+  base_tp2$si_chef_men, 
+  c(`Femme du chef de ménage` = 1,
+    `Chef de ménage` = 2,
+    `Fils-fille du chef de ménage` = 3,
+    `Autres` = 99))
+
+base_tp2$ethnie <- labelled::labelled(
+  base_tp2$ethnie, 
+  c(`Wolof` = 1,
+    `Pulaar/Toucouleur` = 2,
+    `Sérère` = 3,
+    `Mandika/Bambara` = 4,
+    `Soninké` = 5,
+    `Diola` = 6,
+    `Manjack` = 7,
+    `Bainouk` = 8,
+    `Maures` = 9,
+    `Balante` = 10,
+    `Autre` = 77))
+
+base_tp2$occupation <- labelled::labelled(
+  base_tp2$occupation, 
+  c(`Agriculture, Elevage, Sylviculture, Pêche` = 1,
+    `Activités extractives` = 2,
+    `Activités de fabrication (Artisanat)` = 3,
+    `Activités de transformation` = 4,
+    `Production et distribution d'électricité et de gaz` = 5,
+    `Production et distribution d'eau, assainissement, traitement des déchets et dépollution` = 6))
+
+base_tp2$formation <- labelled::labelled(
+  base_tp2$formation, 
+  c(`Non scolarisé` = 1,
+    `Elémentaire` = 2,
+    `Moyen` = 3,
+    `Secondaire` = 4,
+    `Licence` = 5,
+    `Master` = 6,
+    `Doctorat` = 7,
+    `Ne sait pas` = 99))
+
+base_tp2$niveau_alphabs <- labelled::labelled(
+  base_tp2$niveau_alphabs, 
+  c(`Sans niveau` = 0,
+    `Sait lire dans une langue` = 1,
+    `Sait lire et écrire dans une langue` = 2))
+
+base_tp2$types_varietes <- labelled::labelled(
+  base_tp2$types_varietes, 
+  c(`Traditionnelles` = "1",
+    `Améliorées` = "2"))
+
+base_tp2$criteres_var <- labelled::labelled(
+  base_tp2$criteres_var, 
+  c(`Rendements élevés` = "1",
+    `Taille des graines` = "2",
+    `Résistantes aux maladies/ravageurs` = "3",
+    `Tolérantes aux sécheresses` = "4",
+    `Tolérantes aux inondations` = "5",
+    `Faible charge de travail` = "6",
+    `Faibles quantités d'intrants` = "7",
+    `Facile à transformer` = "8",
+    `Haute teneur en huile` = "9",
+    `Haut rendement après transformation` = "10",
+    `Demande sur le marché` = "11",
+    `Bon gôut` = "12",
+    `Belle couleur` = "13",
+    `Haut rendement en fourrages` = "14",
+    `Qualité du fourrage` = "15",
+    `Autres à spécifier` = "16"))
+```
+
+
+```{r}
+#check labels
+expss::val_lab(base_tp2$sexe)
+expss::val_lab(base_tp2$sit_mat)
+expss::val_lab(base_tp2$si_chef_men)
+expss::val_lab(base_tp2$ethnie)
+expss::val_lab(base_tp2$occupation)
+expss::val_lab(base_tp2$formation)
+expss::val_lab(base_tp2$niveau_alphabs)
+expss::val_lab(base_tp2$types_varietes)
+expss::val_lab(base_tp2$criteres_var)
+```
+
+
+
+```{r}
+attach(base_tp2)
+labelled::var_label(sexe) = "Sexe"
+
+labelled::var_label(age) = "Age"
+
+labelled::var_label(sit_mat) = "Situation maritale"
+
+labelled::var_label(si_chef_men) = "Statut dans le ménage"
+
+labelled::var_label(ethnie) = "Ethnie"
+
+labelled::var_label(occupation) = "Occupation"
+
+labelled::var_label(formation) = "Formation"
+
+labelled::var_label(niveau_alphabs) = "Niveau d'alphabétisation"
+
+# labelled::var_label(sup_tot) = "Quelle est la superficie totale emblavée en sésame la saison passée en hectares ?" Cette variable n'existe pas dans la base
+
+
+labelled::var_label(types_varietes) = "Quelles sont les variétés que vous utilisez pour la production de sésame ?"
+
+#labelled::var_label(var_trad) = "Si variétés traditionnelles, donnez les noms ?" 
+#Cette variable n'existe pas dans la base
+
+# labelled::var_label(raison_var_trad) = "Pourquoi utilisez-vous les variétés traditionnelles ?"
+#Cette variable n'existe pas dans la base
+
+
+# labelled::var_label(var_amel) = "Si variétés améliorées, laquelle utilisez-vous ?"
+#Cette variable n'existe pas dans la base
+
+
+# labelled::var_label(raison_var_amel) = "Pourquoi utilisez-vous les variétés améliorées ?"
+#Cette variable n'existe pas dans la base
+
+
+labelled::var_label(criteres_var) = "Quelles sont les critères de choix des variétés de sésame ?"
+```
+
+## Analyse descriptive
+
+```{r}
+source("script_p.R")
+```
+
+
+```{r}
+univarie(base_tp2, "sexe", plot = TRUE)
+univarie(base_tp2, "sit_mat", plot = TRUE)
+univarie(base_tp2, "si_chef_men", plot = TRUE)
+univarie(base_tp2, "ethnie", plot = TRUE)
+univarie(base_tp2, "formation", plot = TRUE)
+```
+
+```{r}
+bivarie(base_tp2, "sexe", "sit_mat")
+bivarie(base_tp2, "sexe", "si_chef_men", plot = TRUE)
+bivarie(base_tp2, "sexe", "ethnie", plot = TRUE)
+bivarie(base_tp2, "sexe", "formation", plot = TRUE)
+
+bivarie(base_tp2, "sit_mat", "si_chef_men", plot = TRUE)
+bivarie(base_tp2, "sit_mat", "ethnie", plot = TRUE)
+bivarie(base_tp2, "sit_mat", "formation", plot = TRUE)
+
+bivarie(base_tp2, "si_chef_men", "ethnie", plot = TRUE)
+bivarie(base_tp2, "si_chef_men", "formation", plot = TRUE)
+
+bivarie(base_tp2, "ethnie", "formation", plot = TRUE)
+```
+
+
+
+
+</ul>
+
+
+
