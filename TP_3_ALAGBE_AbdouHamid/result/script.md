@@ -1,11 +1,8 @@
 ---
 title: "TP1 - Data Analysis I"
 author: "Guerzoniansus"
-date: "`r Sys.Date()`"
+date: "2024-05-02"
 output:
-  pdf_document:
-    toc: true
-    toc_depth: '3'
   html_document:
     toc: true
     toc_depth: 3
@@ -13,21 +10,18 @@ output:
     number_sections: true
     code_folding: show
     keep_md: true
+  pdf_document:
+    toc: true
+    toc_depth: '3'
 ---
 
 
-```{r setup, include=FALSE, results = 'hide'}
-knitr::opts_chunk$set(
-	echo = TRUE,
-	message = FALSE,
-	warning = FALSE,
-  results = "show"
-)
-```
+
 
 # Importation des packages nécessaires et préparation de l'environnement R
 
-```{r packages needed}
+
+```r
 library(tidyverse)
 library(dplyr)
 library(here)
@@ -35,11 +29,13 @@ library(ggplot2)
 library(ggtext)
 ```
 
-```{r remove environment variables}
+
+```r
 rm(list=ls())
 ```
 
-```{r change working dir, warning=FALSE}
+
+```r
 c_dir <- paste0(here::here(), "/TP_3_ALAGBE_AbdouHamid")
 setwd(c_dir)
 ```
@@ -48,7 +44,8 @@ setwd(c_dir)
 
 # Importation des bases de données
 
-```{r importing datasets}
+
+```r
 pop_growth_annual <- read_csv(
   paste0(c_dir, "/data/population-growth-annual.csv"))
 gender_inequality_index <- read_csv(
@@ -60,7 +57,8 @@ annual_growth_in_gni_per_capita <- read_csv(
 # Graphics reproduction
 
 
-```{r niger dataset for income growth and distribution}
+
+```r
 # Niger dataset
 
 niger_annual_growth_in_gni_per_capita <- 
@@ -72,7 +70,8 @@ niger_annual_growth_in_gni_per_capita$Region <- "Niger"
 ```
 
 
-```{r western africa dataset for income growth and distribution}
+
+```r
 # Western dataset
 
 western_africa_annual_growth_in_gni_per_capita <- 
@@ -91,11 +90,11 @@ western_africa_annual_growth_in_gni_per_capita <-
             FUN=mean)
 
 western_africa_annual_growth_in_gni_per_capita$Region <- "Western Africa"
-
 ```
 
 
-```{r world dataset for income growth and distribution}
+
+```r
 # World dataset
 
 world_annual_growth_in_gni_per_capita <- 
@@ -109,24 +108,22 @@ world_annual_growth_in_gni_per_capita <-
             FUN=mean)
 
 world_annual_growth_in_gni_per_capita$Region <- "World"
-
 ```
 
 
-```{r final dataset for income growth and distribution used in plotting the graph N°1}
 
+```r
 # Final dataset for plotting
 
 plot_annual_growth_in_gni_per_capita <- 
   rbind(niger_annual_growth_in_gni_per_capita,
         western_africa_annual_growth_in_gni_per_capita,
         world_annual_growth_in_gni_per_capita)
-
 ```
 
 
-```{r graph N°1 income growth and distribution}
 
+```r
 plot <- 
   ggplot(plot_annual_growth_in_gni_per_capita, 
          aes(`Start Year`, `Value`, group=`Region`)) +
@@ -176,9 +173,9 @@ plot <- plot +
     plot.margin = margin(1, 1, 1, 1, "cm"))
 
 plot
-
 ```
 
+![](script_files/figure-html/graph N°1 income growth and distribution-1.png)<!-- -->
 
 
 
@@ -193,13 +190,16 @@ plot
 
 
 
-```{r, eval=FALSE, warning=FALSE}
+
+
+```r
 table(pop_growth_annual$`Region Name`)
 length(unique(pop_growth_annual$`Region Name`))
 ```
 
 
-```{r niger dataset for population growth}
+
+```r
 # Niger dataset
 
 niger_pop_growth_annual <- 
@@ -210,7 +210,8 @@ niger_pop_growth_annual$Region <- "Niger"
 ```
 
 
-```{r western africa dataset for population growth}
+
+```r
 # Western dataset
 
 western_africa_pop_growth_annual <- 
@@ -230,11 +231,11 @@ western_africa_pop_growth_annual <-
             FUN=mean)
 
 western_africa_pop_growth_annual$Region <- "Western Africa"
-
 ```
 
 
-```{r world dataset for population growth}
+
+```r
 # World dataset
 
 world_pop_growth_annual <- 
@@ -248,25 +249,23 @@ world_pop_growth_annual <-
             FUN=mean)
 
 world_pop_growth_annual$Region <- "World"
-
 ```
 
 
-```{r final dataset for population growth used in plotting the graph N°2}
 
+```r
 # Final dataset for plotting
 
 plot_pop_growth_annual <- 
   rbind(niger_pop_growth_annual,
         western_africa_pop_growth_annual,
         world_pop_growth_annual)
-
 ```
 
 
 
-```{r graph N°2 population growth annual}
 
+```r
 plot <- 
   ggplot(plot_pop_growth_annual,
          aes(`Start Year`, `Value`, group=`Region`)) +
@@ -318,9 +317,9 @@ plot <- plot +
     plot.margin = margin(1, 1, 1, 1, "cm"))
 
 plot
-
 ```
 
+![](script_files/figure-html/graph N°2 population growth annual-1.png)<!-- -->
 
 
 
@@ -332,7 +331,9 @@ plot
 
 
 
-```{r niger dataset for gender inequality}
+
+
+```r
 # Niger dataset
 
 niger_gender_inequality_index <- 
@@ -343,7 +344,8 @@ niger_gender_inequality_index$Region <- "Niger"
 ```
 
 
-```{r western africa dataset for gender inequality}
+
+```r
 # Western dataset
 
 western_africa_gender_inequality_index <- 
@@ -365,11 +367,11 @@ western_africa_gender_inequality_index <-
     FUN=mean)
 
 western_africa_gender_inequality_index$Region <- "Western Africa"
-
 ```
 
 
-```{r world dataset for gender inequality}
+
+```r
 # World dataset
 
 world_gender_inequality_index <- 
@@ -385,25 +387,23 @@ world_gender_inequality_index <-
     FUN=mean)
 
 world_gender_inequality_index$Region <- "World"
-
 ```
 
 
-```{r final dataset for gender inequality used in plotting the graph N°2}
 
+```r
 # Final dataset for plotting
 
 plot_gender_inequality_index <- 
   rbind(niger_gender_inequality_index, 
         western_africa_gender_inequality_index,
         world_gender_inequality_index)
-
 ```
 
 
 
-```{r graph N°2 gender inequality}
 
+```r
 plot <- 
   ggplot(plot_gender_inequality_index,
          aes(`Start Year`, `Value`, group=`Region`)) +
@@ -477,8 +477,9 @@ plot <- plot +
     vjust = -1.5, hjust = 0.5)
 
 plot
-
 ```
+
+![](script_files/figure-html/graph N°2 gender inequality-1.png)<!-- -->
 
 
 
